@@ -53,6 +53,10 @@ For IT administrators who prefer to run the utility directly from memory without
 irm https://raw.githubusercontent.com/deadboy18/Onity-Enterprise-Toolkit/main/Service%20Management/OnPortal-Service-Manager.ps1 -OutFile $env:TEMP\onity.ps1; & $env:TEMP\onity.ps1
 ```
 
+```powershell
+irm https://bit.ly/onportal_service_restart -OutFile $env:TEMP\onity.ps1; & $env:TEMP\onity.ps1
+```
+
 ### 3. Software Installers & Documentation
 
 Due to GitHub repository size limits, all official OnPortal executables (v1.6 through v3.0.7), DirectKey toolkits, Bluegiga drivers, and official installation manuals are hosted on external secure mirrors.
