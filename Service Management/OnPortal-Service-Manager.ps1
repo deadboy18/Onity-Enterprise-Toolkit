@@ -5,12 +5,23 @@
     Special thanks to Kernwuzhere1979 for assisting with this tool.
 #>
 
-# Auto-Elevate to Administrator
+# --- WEB-FRIENDLY ADMIN ELEVATION ---
 if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Host "Elevating privileges..." -ForegroundColor Yellow
-    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    Write-Host "  [!] Requesting Admin Permissions..." -ForegroundColor Yellow
+    
+    # If running via IEX (no file path), we re-run the web command as Admin
+    if ($PSCommandPath -eq "") {
+        $webCommand = 'irm "https://raw.githubusercontent.com/deadboy18/Onity-Enterprise-Toolkit/main/Service-Management/OnPortal-Service-Manager.ps1" | iex'
+        Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$webCommand`"" -Verb RunAs
+    } else {
+        # If running from a local file, we run the file as Admin
+        Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
+    }
     exit
 }
+
+# --- REST OF YOUR SCRIPT ---
+# (Keep the functions and menu loop here)
 
 # Helper function to keep the restart logic clean
 function Restart-OnityService {
@@ -79,5 +90,6 @@ do {
     Write-Host "`n  --------------------------------------------------------" -ForegroundColor Cyan
     $pause = Read-Host "  Press Enter to return to menu or type 'Q' to quit"
     if ($pause -eq 'q' -or $pause -eq 'Q') { exit }
+
 
 } while ($true)
