@@ -50,7 +50,7 @@ An interactive, CLI-based graphical utility to force-restart critical Onity serv
 For IT administrators who prefer to run the utility directly from memory without downloading local files, open an elevated PowerShell terminal and execute the following command:
 
 ```powershell
-irm "https://raw.githubusercontent.com/deadboy18/Onity-Enterprise-Toolkit/main/Service%20Management/OnPortal-Service-Manager.ps1" | iex
+irm https://raw.githubusercontent.com/deadboy18/Onity-Enterprise-Toolkit/main/Service%20Management/OnPortal-Service-Manager.ps1 -OutFile $env:TEMP\onity.ps1; & $env:TEMP\onity.ps1
 ```
 
 ### 3. Software Installers & Documentation
