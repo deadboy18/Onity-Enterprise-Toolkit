@@ -1,18 +1,28 @@
-﻿<#
-.SYNOPSIS
-    Interactive utility to force-restart OnPortal Node and IoT Services.
-.NOTES
-    Special thanks to Kernwuzhere1979 for assisting with this tool.
+<# : Batch Wrapper
+@echo off
+title OnPortal Service Manager
+
+:: --- ADMIN ELEVATION ---
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+if '%errorlevel%' NEQ '0' (
+    echo [!] Requesting Admin Permissions...
+    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+    echo UAC.ShellExecute "%~s0", "", "", "runas", 1 >> "%temp%\getadmin.vbs"
+    "%temp%\getadmin.vbs"
+    exit /B
+)
+if exist "%temp%\getadmin.vbs" ( del "%temp%\getadmin.vbs" )
+cd /d "%~dp0"
+
+:: --- EXECUTE POWERSHELL ---
+powershell.exe -NoProfile -ExecutionPolicy Bypass -Command "Invoke-Expression (Get-Content '%~f0' -Encoding UTF8 -Raw)"
+exit /B
 #>
 
-# Auto-Elevate to Administrator
-if (-not ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {
-    Write-Host "Elevating privileges..." -ForegroundColor Yellow
-    Start-Process powershell.exe -ArgumentList "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs
-    exit
-}
+# ==============================================================================
+# --- POWERSHELL SCRIPT STARTS HERE ---
+# ==============================================================================
 
-# Helper function to keep the restart logic clean
 function Restart-OnityService {
     param (
         [string]$ServiceName,
